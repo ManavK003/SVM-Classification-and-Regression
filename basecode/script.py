@@ -120,7 +120,12 @@ def blrObjFunction(initialWeights, *args):
     
     error = - (1/n_data)*np.sum(labeli * np.log(theta) + (1 - labeli) * np.log(1 - theta))
     
+    error_grad = np.zeros((n_features + 1, 1))
     
+    error_grad = - (1/n_data)*np.sum((theta-labeli)*biastrain_data)
+    
+    
+
     ##################
     # YOUR CODE HERE #
     ##################
