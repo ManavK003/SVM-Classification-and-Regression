@@ -109,7 +109,18 @@ def blrObjFunction(initialWeights, *args):
     n_features = train_data.shape[1]
     error = 0
     error_grad = np.zeros((n_features + 1, 1))
+    
+    ones = np.ones((train_data.shape[0], 1))
 
+    biastrain_data = np.hstack((ones, train_data))
+    
+    theta = sigmoid(np.dot(initialWeights.T, biastrain_data))
+    
+    labeli = labeli.reshape(-1, 1) 
+    
+    error = - (1/n_data)*np.sum(labeli * np.log(theta) + (1 - labeli) * np.log(1 - theta))
+    
+    
     ##################
     # YOUR CODE HERE #
     ##################
