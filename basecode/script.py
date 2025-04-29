@@ -150,6 +150,19 @@ def blrPredict(W, data):
 
     """
     label = np.zeros((data.shape[0], 1))
+    
+    
+    ones = np.ones((data.shape[0], 1))
+
+    biastrain_data = np.hstack((ones, data))
+    
+    theta = sigmoid(np.dot(W.T, biastrain_data))
+    
+    label = np.argmax(theta, axis=1)
+    label = label.reshape(-1, 1)
+    
+    
+    
 
     ##################
     # YOUR CODE HERE #
