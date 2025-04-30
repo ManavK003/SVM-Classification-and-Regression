@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.io import loadmat
 from scipy.optimize import minimize
-
+import matplotlib.pyplot as plt
 
 def preprocess():
     """ 
@@ -103,35 +103,64 @@ def blrObjFunction(initialWeights, *args):
         error_grad: the vector of size (D+1) x 1 representing the gradient of
                     error function
     """
+    e_total=0
     train_data, labeli = args
-
+    initialWeights = initialWeights.reshape((-1, 1))
+    # print("W shape:")
+    # print(initialWeights.shape)
+    
+    # print("x shape:")
+    # print(train_data.shape)
+    
     n_data = train_data.shape[0]
     n_features = train_data.shape[1]
     error = 0
     error_grad = np.zeros((n_features + 1, 1))
+    # print("W shape:1")
     
     ones = np.ones((train_data.shape[0], 1))
+    #print("W shape:2")
 
     biastrain_data = np.hstack((ones, train_data))
+   # print("W shape:3")
     
-    theta = sigmoid(np.dot(initialWeights.T, biastrain_data))
+    # print("x shape:")
+    # print(biastrain_data.shape)
+    
+    theta = sigmoid(np.dot( biastrain_data, initialWeights))
+   # print("W shape:4")
     
     labeli = labeli.reshape(-1, 1) 
+   # print("W shape:5")
     
-    error = - (1/n_data)*np.sum(labeli * np.log(theta) + (1 - labeli) * np.log(1 - theta))
+    per_sample_errors = -(labeli * np.log(theta) + (1 - labeli) * np.log(1 - theta))
+    error = np.mean(per_sample_errors)
+    
+    e_total = np.sum(per_sample_errors)
+   # print("W shape:6")
     
     error_grad = np.zeros((n_features + 1, 1))
+  #  print("W shape:7")
     
-    error_grad = - (1/n_data)*np.sum((theta-labeli)*biastrain_data)
+    xb= theta-labeli
+    
+    error_grad = np.dot(biastrain_data.T, (theta - labeli))/n_data
+  #  print("W shape:8")
     
     
+    plt.figure(figsize=(4, 6))
+    plt.bar(['Total Error'], [e_total], color='salmon')
+    plt.ylabel("Total Error")
+    plt.title("Total Training Error")
+    plt.tight_layout()
+    plt.show()
 
     ##################
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
-
-    return error, error_grad
+    print(error)
+    return error, error_grad.flatten()
 
 
 def blrPredict(W, data):
@@ -151,12 +180,18 @@ def blrPredict(W, data):
     """
     label = np.zeros((data.shape[0], 1))
     
-    
+   # W = W.reshape((-1, 1))
     ones = np.ones((data.shape[0], 1))
 
     biastrain_data = np.hstack((ones, data))
     
-    theta = sigmoid(np.dot(W.T, biastrain_data))
+    print("W shape:")
+    print(W.shape)
+    
+    print("x shape:")
+    print(biastrain_data.shape)
+    
+    theta = sigmoid(np.dot(biastrain_data,  W))
     
     label = np.argmax(theta, axis=1)
     label = label.reshape(-1, 1)
@@ -244,10 +279,11 @@ n_feature = train_data.shape[1]
 Y = np.zeros((n_train, n_class))
 for i in range(n_class):
     Y[:, i] = (train_label == i).astype(int).ravel()
-
+print("NUM Fea:")
+print(n_feature+1)
 # Logistic Regression with Gradient Descent
 W = np.zeros((n_feature + 1, n_class))
-initialWeights = np.zeros((n_feature + 1, 1))
+initialWeights = np.zeros(n_feature + 1)
 opts = {'maxiter': 100}
 for i in range(n_class):
     labeli = Y[:, i].reshape(n_train, 1)
@@ -267,6 +303,27 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == vali
 predicted_label = blrPredict(W, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
 
+print('-------------------For Test data---------------------')
+
+# number of training samples
+n_test = test_data.shape[0]
+
+# number of features
+n_featurey = test_data.shape[1]
+Y1 = np.zeros((n_test, n_class))
+for i in range(n_class):
+    Y1[:, i] = (test_label == i).astype(int).ravel()
+print("NUM Fea:")
+print(n_featurey+1)
+# Logistic Regression with Gradient Descent
+W2 = np.zeros((n_featurey + 1, n_class))
+initialWeights1 = np.zeros(n_featurey + 1)
+opts1 = {'maxiter': 100}
+for i in range(n_class):
+    labeli1 = Y1[:, i].reshape(n_test, 1)
+    args1 = (test_data, labeli1)
+    nn_params1 = minimize(blrObjFunction, initialWeights1, jac=True, args=args1, method='CG', options=opts1)
+    W2[:, i] = nn_params1.x.reshape((n_featurey + 1,))
 """
 Script for Support Vector Machine
 """
@@ -282,7 +339,7 @@ Script for Extra Credit Part
 """
 # FOR EXTRA CREDIT ONLY
 W_b = np.zeros((n_feature + 1, n_class))
-initialWeights_b = np.zeros((n_feature + 1, n_class))
+initialWeights_b = np.zeros((n_feature + 1, n_class)).flatten()
 opts_b = {'maxiter': 100}
 
 args_b = (train_data, Y)
@@ -300,3 +357,5 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == va
 # Find the accuracy on Testing Dataset
 predicted_label_b = mlrPredict(W_b, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
+
+
