@@ -227,7 +227,7 @@ def mlrObjFunction(params, *args):
     global e_total
     train_data, labeli = args
     n_class = labeli.shape[1]
-    
+    n_features = train_data.shape[1]
     params = params.reshape((n_features + 1, n_class))
     # print("W shape:")
     # print(initialWeights.shape)
@@ -249,7 +249,7 @@ def mlrObjFunction(params, *args):
     
     # print("x shape:")
     # print(biastrain_data.shape)
-    Z = np.dot(biastrain_data, W)  
+    Z = np.dot(biastrain_data, params)  
     px = (np.exp(Z - np.max(Z, axis=1, keepdims=True)))/np.sum(np.exp(Z - np.max(Z, axis=1, keepdims=True)), axis=1, keepdims=True)
     
     
@@ -258,7 +258,7 @@ def mlrObjFunction(params, *args):
     theta = sigmoid(np.dot( biastrain_data, params))
     #print("W shape:4")
     
-    labeli = labeli.reshape(-1, 1)  
+      
     #print("W shape:5")
     
     # per_sample_errors = -(labeli * np.log(px))
@@ -366,7 +366,7 @@ plt.figure(figsize=(10, 5))
 plt.bar(range(10), e_total, color='salmon')
 plt.xlabel("Digit Class")
 plt.ylabel("Total Training Error")
-plt.title("Total Cross-Entropy Training Error per Class")
+plt.title("Total Cross-Entropy Training Error per Class using BLR")
 plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
@@ -398,8 +398,8 @@ for i in range(n_class):
 plt.figure(figsize=(10, 5))
 plt.bar(range(10), e_total, color='salmon')
 plt.xlabel("Digit Class")
-plt.ylabel("Total Testing Error")
-plt.title("Total Cross-Entropy Test Error per Class")
+plt.ylabel("Total BLR Testing Error")
+plt.title("Total Cross-Entropy Test Error per Class using BLR")
 plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
@@ -443,8 +443,8 @@ print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_
 plt.figure(figsize=(10, 5))
 plt.bar(range(10), e_total, color='salmon')
 plt.xlabel("Digit Class")
-plt.ylabel("Total Testing Error")
-plt.title("Total Cross-Entropy Test Error per Class")
+plt.ylabel("Total MLR Training Error")
+plt.title("Total Cross-Entropy Train Error using MLR")
 plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
@@ -458,27 +458,27 @@ W_b = np.zeros((n_featurey + 1, n_class))
 initialWeights_b = np.zeros((n_featurey + 1, n_class)).flatten()
 opts_b12 = {'maxiter': 100}
 
-args_b12 = (test_data, Y)
+args_b12 = (test_data, Y1)
 nn_params12 = minimize(mlrObjFunction, initialWeights_b, jac=True, args=args_b12, method='CG', options=opts_b12)
 W_b = nn_params12.x.reshape((n_featurey + 1, n_class))
 
-# Find the accuracy on Training Dataset
-predicted_label_b = mlrPredict(W_b, test_data)
-print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label_b == train_label).astype(float))) + '%')
+# # Find the accuracy on Training Dataset
+# predicted_label_b = mlrPredict(W_b, test_data)
+# print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label_b == train_label).astype(float))) + '%')
 
-# Find the accuracy on Validation Dataset
-predicted_label_b = mlrPredict(W_b, validation_data)
-print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == validation_label).astype(float))) + '%')
+# # Find the accuracy on Validation Dataset
+# predicted_label_b = mlrPredict(W_b, validation_data)
+# print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == validation_label).astype(float))) + '%')
 
-# Find the accuracy on Testing Dataset
-predicted_label_b = mlrPredict(W_b, test_data)
-print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
+# # Find the accuracy on Testing Dataset
+# predicted_label_b = mlrPredict(W_b, test_data)
+# print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
 
 plt.figure(figsize=(10, 5))
 plt.bar(range(10), e_total, color='salmon')
 plt.xlabel("Digit Class")
-plt.ylabel("Total Testing Error")
-plt.title("Total Cross-Entropy Test Error per Class")
+plt.ylabel("Total MLR Testing Error")
+plt.title("Total Cross-Entropy Test Error using MLR")
 plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
