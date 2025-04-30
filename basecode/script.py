@@ -227,6 +227,7 @@ def mlrObjFunction(params, *args):
     global e_total
     train_data, labeli = args
     n_class = labeli.shape[1]
+    
     params = params.reshape((n_features + 1, n_class))
     # print("W shape:")
     # print(initialWeights.shape)
@@ -257,16 +258,16 @@ def mlrObjFunction(params, *args):
     theta = sigmoid(np.dot( biastrain_data, params))
     #print("W shape:4")
     
-    labeli = labeli.reshape(-1, 1) 
+    labeli = labeli.reshape(-1, 1)  
     #print("W shape:5")
     
-    per_sample_errors = -(labeli * np.log(theta)+(1 - labeli)*np.log(1 - theta))
-    error = np.mean(per_sample_errors)
+    # per_sample_errors = -(labeli * np.log(px))
+    # error = np.mean(per_sample_errors)
     
     error_grad = np.dot(biastrain_data.T, (px - labeli))/n_data
     
-    current_class_index = np.sum(labeli) == labeli.shape[0] 
-    e_total[i] = np.sum(per_sample_errors)
+    # current_class_index = np.sum(labeli) == labeli.shape[0] 
+    # e_total[i] = np.sum(per_sample_errors)
     #print("W shape:6")
     
     # error_grad = np.zeros((n_features + 1, 1))
@@ -297,6 +298,18 @@ def mlrPredict(W, data):
     """
     label = np.zeros((data.shape[0], 1))
 
+    n_data = data.shape[0]
+    ones = np.ones((n_data, 1))
+    bias_data = np.hstack((ones, data))
+
+
+    Z = np.dot(bias_data, W) 
+ 
+    xy = (np.exp(Z - np.max(Z, axis=1, keepdims=True)))/np.sum((np.exp(Z - np.max(Z, axis=1, keepdims=True))), axis=1, keepdims=True)  
+
+    # Predict label = class with max probability
+    label = np.argmax(xy, axis=1).reshape(-1, 1)
+  
     ##################
     # YOUR CODE HERE #
     ##################
@@ -357,6 +370,8 @@ plt.title("Total Cross-Entropy Training Error per Class")
 plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
+
+
 print('-------------------For Test data---------------------')
 e_total = np.zeros(10)
 i=0
@@ -441,14 +456,14 @@ e_total = np.zeros(10)
 i=0
 W_b = np.zeros((n_featurey + 1, n_class))
 initialWeights_b = np.zeros((n_featurey + 1, n_class)).flatten()
-opts_b1 = {'maxiter': 100}
+opts_b12 = {'maxiter': 100}
 
-args_b = (train_data, Y)
-nn_params = minimize(mlrObjFunction, initialWeights_b, jac=True, args=args_b, method='CG', options=opts_b)
-W_b = nn_params.x.reshape((n_featurey + 1, n_class))
+args_b12 = (test_data, Y)
+nn_params12 = minimize(mlrObjFunction, initialWeights_b, jac=True, args=args_b12, method='CG', options=opts_b12)
+W_b = nn_params12.x.reshape((n_featurey + 1, n_class))
 
 # Find the accuracy on Training Dataset
-predicted_label_b = mlrPredict(W_b, train_data)
+predicted_label_b = mlrPredict(W_b, test_data)
 print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label_b == train_label).astype(float))) + '%')
 
 # Find the accuracy on Validation Dataset
