@@ -2,7 +2,8 @@ import numpy as np
 from scipy.io import loadmat
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
-
+e_total = np.zeros(10)
+i=0
 def preprocess():
     """ 
      Input:
@@ -103,7 +104,7 @@ def blrObjFunction(initialWeights, *args):
         error_grad: the vector of size (D+1) x 1 representing the gradient of
                     error function
     """
-    e_total=0
+    global e_total
     train_data, labeli = args
     initialWeights = initialWeights.reshape((-1, 1))
     # print("W shape:")
@@ -116,50 +117,51 @@ def blrObjFunction(initialWeights, *args):
     n_features = train_data.shape[1]
     error = 0
     error_grad = np.zeros((n_features + 1, 1))
-    # print("W shape:1")
+    #print("W shape:1")
     
     ones = np.ones((train_data.shape[0], 1))
     #print("W shape:2")
 
     biastrain_data = np.hstack((ones, train_data))
-   # print("W shape:3")
+    #print("W shape:3")
     
     # print("x shape:")
     # print(biastrain_data.shape)
     
     theta = sigmoid(np.dot( biastrain_data, initialWeights))
-   # print("W shape:4")
+    #print("W shape:4")
     
     labeli = labeli.reshape(-1, 1) 
-   # print("W shape:5")
+    #print("W shape:5")
     
     per_sample_errors = -(labeli * np.log(theta) + (1 - labeli) * np.log(1 - theta))
     error = np.mean(per_sample_errors)
     
-    e_total = np.sum(per_sample_errors)
-   # print("W shape:6")
+    current_class_index = np.sum(labeli) == labeli.shape[0] 
+    e_total[i] = np.sum(per_sample_errors)
+    #print("W shape:6")
     
     error_grad = np.zeros((n_features + 1, 1))
-  #  print("W shape:7")
+    #print("W shape:7")
     
     xb= theta-labeli
     
     error_grad = np.dot(biastrain_data.T, (theta - labeli))/n_data
-  #  print("W shape:8")
+    #print("W shape:8")
     
     
-    plt.figure(figsize=(4, 6))
-    plt.bar(['Total Error'], [e_total], color='salmon')
-    plt.ylabel("Total Error")
-    plt.title("Total Training Error")
-    plt.tight_layout()
-    plt.show()
+    # plt.figure(figsize=(4, 6))
+    # plt.bar(['Total Error'], [e_total], color='salmon')
+    # plt.ylabel("Total Error")
+    # plt.title("Total Training Error")
+    # plt.tight_layout()
+    # plt.show()
 
     ##################
     # YOUR CODE HERE #
     ##################
     # HINT: Do not forget to add the bias term to your input data
-    print(error)
+    #print(error)
     return error, error_grad.flatten()
 
 
@@ -185,11 +187,11 @@ def blrPredict(W, data):
 
     biastrain_data = np.hstack((ones, data))
     
-    print("W shape:")
-    print(W.shape)
+    # print("W shape:")
+    # print(W.shape)
     
-    print("x shape:")
-    print(biastrain_data.shape)
+    # print("x shape:")
+    # print(biastrain_data.shape)
     
     theta = sigmoid(np.dot(biastrain_data,  W))
     
@@ -285,11 +287,13 @@ print(n_feature+1)
 W = np.zeros((n_feature + 1, n_class))
 initialWeights = np.zeros(n_feature + 1)
 opts = {'maxiter': 100}
-for i in range(n_class):
-    labeli = Y[:, i].reshape(n_train, 1)
+for class_index in range(n_class):
+        
+    i = class_index
+    labeli = Y[:, class_index].reshape(n_train, 1)
     args = (train_data, labeli)
     nn_params = minimize(blrObjFunction, initialWeights, jac=True, args=args, method='CG', options=opts)
-    W[:, i] = nn_params.x.reshape((n_feature + 1,))
+    W[:, class_index] = nn_params.x.reshape((n_feature + 1,))
 
 # Find the accuracy on Training Dataset
 predicted_label = blrPredict(W, train_data)
@@ -303,6 +307,15 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label == vali
 predicted_label = blrPredict(W, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label == test_label).astype(float))) + '%')
 
+
+plt.figure(figsize=(10, 5))
+plt.bar(range(10), e_total, color='salmon')
+plt.xlabel("Digit Class")
+plt.ylabel("Total Training Error")
+plt.title("Total Cross-Entropy Training Error per Class")
+plt.xticks(range(10))
+plt.tight_layout()
+plt.show()
 print('-------------------For Test data---------------------')
 
 # number of training samples
@@ -324,6 +337,16 @@ for i in range(n_class):
     args1 = (test_data, labeli1)
     nn_params1 = minimize(blrObjFunction, initialWeights1, jac=True, args=args1, method='CG', options=opts1)
     W2[:, i] = nn_params1.x.reshape((n_featurey + 1,))
+
+plt.figure(figsize=(10, 5))
+plt.bar(range(10), e_total, color='salmon')
+plt.xlabel("Digit Class")
+plt.ylabel("Total Testing Error")
+plt.title("Total Cross-Entropy Test Error per Class")
+plt.xticks(range(10))
+plt.tight_layout()
+plt.show()
+
 """
 Script for Support Vector Machine
 """
