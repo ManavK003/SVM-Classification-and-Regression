@@ -224,19 +224,60 @@ def mlrObjFunction(params, *args):
         error_grad: the vector of size (D+1) x 10 representing the gradient of
                     error function
     """
+    global e_total
     train_data, labeli = args
+    n_class = labeli.shape[1]
+    params = params.reshape((n_features + 1, n_class))
+    # print("W shape:")
+    # print(initialWeights.shape)
+    
+    # print("x shape:")
+    # print(train_data.shape)
+    
     n_data = train_data.shape[0]
-    n_feature = train_data.shape[1]
+    n_features = train_data.shape[1]
     error = 0
-    error_grad = np.zeros((n_feature + 1, n_class))
+    error_grad = np.zeros((n_features + 1, 1))
+    #print("W shape:1")
+    
+    ones = np.ones((train_data.shape[0], 1))
+    #print("W shape:2")
 
-    ##################
-    # YOUR CODE HERE #
-    ##################
-    # HINT: Do not forget to add the bias term to your input data
+    biastrain_data = np.hstack((ones, train_data))
+    #print("W shape:3")
+    
+    # print("x shape:")
+    # print(biastrain_data.shape)
+    Z = np.dot(biastrain_data, W)  
+    px = (np.exp(Z - np.max(Z, axis=1, keepdims=True)))/np.sum(np.exp(Z - np.max(Z, axis=1, keepdims=True)), axis=1, keepdims=True)
+    
+    
+    error = -np.sum(labeli * np.log(px))/n_data
+    
+    theta = sigmoid(np.dot( biastrain_data, params))
+    #print("W shape:4")
+    
+    labeli = labeli.reshape(-1, 1) 
+    #print("W shape:5")
+    
+    per_sample_errors = -(labeli * np.log(theta)+(1 - labeli)*np.log(1 - theta))
+    error = np.mean(per_sample_errors)
+    
+    error_grad = np.dot(biastrain_data.T, (px - labeli))/n_data
+    
+    current_class_index = np.sum(labeli) == labeli.shape[0] 
+    e_total[i] = np.sum(per_sample_errors)
+    #print("W shape:6")
+    
+    # error_grad = np.zeros((n_features + 1, 1))
+    #print("W shape:7")
+    
+    # xb= theta-labeli
+    
+    # error_grad = np.dot(biastrain_data.T, (theta - labeli))/n_data
 
 
-    return error, error_grad
+    return error, error_grad.flatten()
 
 
 def mlrPredict(W, data):
@@ -317,7 +358,8 @@ plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
 print('-------------------For Test data---------------------')
-
+e_total = np.zeros(10)
+i=0
 # number of training samples
 n_test = test_data.shape[0]
 
@@ -352,7 +394,7 @@ Script for Support Vector Machine
 """
 
 print('\n\n--------------SVM-------------------\n\n')
-##################
+################## 
 # YOUR CODE HERE #
 ##################
 
@@ -361,6 +403,8 @@ print('\n\n--------------SVM-------------------\n\n')
 Script for Extra Credit Part
 """
 # FOR EXTRA CREDIT ONLY
+e_total = np.zeros(10)
+i=0
 W_b = np.zeros((n_feature + 1, n_class))
 initialWeights_b = np.zeros((n_feature + 1, n_class)).flatten()
 opts_b = {'maxiter': 100}
@@ -381,4 +425,45 @@ print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == va
 predicted_label_b = mlrPredict(W_b, test_data)
 print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
 
+plt.figure(figsize=(10, 5))
+plt.bar(range(10), e_total, color='salmon')
+plt.xlabel("Digit Class")
+plt.ylabel("Total Testing Error")
+plt.title("Total Cross-Entropy Test Error per Class")
+plt.xticks(range(10))
+plt.tight_layout()
+plt.show()
 
+
+print('-------------------For Test data MLR---------------------')
+
+e_total = np.zeros(10)
+i=0
+W_b = np.zeros((n_featurey + 1, n_class))
+initialWeights_b = np.zeros((n_featurey + 1, n_class)).flatten()
+opts_b1 = {'maxiter': 100}
+
+args_b = (train_data, Y)
+nn_params = minimize(mlrObjFunction, initialWeights_b, jac=True, args=args_b, method='CG', options=opts_b)
+W_b = nn_params.x.reshape((n_featurey + 1, n_class))
+
+# Find the accuracy on Training Dataset
+predicted_label_b = mlrPredict(W_b, train_data)
+print('\n Training set Accuracy:' + str(100 * np.mean((predicted_label_b == train_label).astype(float))) + '%')
+
+# Find the accuracy on Validation Dataset
+predicted_label_b = mlrPredict(W_b, validation_data)
+print('\n Validation set Accuracy:' + str(100 * np.mean((predicted_label_b == validation_label).astype(float))) + '%')
+
+# Find the accuracy on Testing Dataset
+predicted_label_b = mlrPredict(W_b, test_data)
+print('\n Testing set Accuracy:' + str(100 * np.mean((predicted_label_b == test_label).astype(float))) + '%')
+
+plt.figure(figsize=(10, 5))
+plt.bar(range(10), e_total, color='salmon')
+plt.xlabel("Digit Class")
+plt.ylabel("Total Testing Error")
+plt.title("Total Cross-Entropy Test Error per Class")
+plt.xticks(range(10))
+plt.tight_layout()
+plt.show()
