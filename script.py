@@ -408,138 +408,138 @@ plt.xticks(range(10))
 plt.tight_layout()
 plt.show()
 
-"""
-Script for Support Vector Machine
-"""
+# """
+# Script for Support Vector Machine
+# """
 
-print('\n\n--------------SVM-------------------\n\n')
-################## 
-# YOUR CODE HERE #
-##################
+# print('\n\n--------------SVM-------------------\n\n')
+# ################## 
+# # YOUR CODE HERE #
+# ##################
 
-# Linear Kernel
+# # Linear Kernel
 
-train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
+# train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
 
-train_label = train_label.ravel()
-validation_label = validation_label.ravel()
-test_label = test_label.ravel()
-
-
-svclin = SVC(kernel='linear') 
-svclin.fit(train_data, train_label)
-
-train_acc_lin = accuracy_score(train_label, svclin.predict(train_data))
-vacc_lin = accuracy_score(validation_label, svclin.predict(validation_data))
-test_acc_lin = accuracy_score(test_label, svclin.predict(test_data))
-
-print("Linear Kernel Accuracies:")
-print("Train:", train_acc_lin, "Val:", vacc_lin, "Test:", test_acc_lin)
-
-train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
-
-train_label = train_label.ravel()
-validation_label = validation_label.ravel()
-test_label = test_label.ravel()
-
-svcrbfdef = SVC(kernel='rbf')  
-svcrbfdef.fit(train_data, train_label)
-
-train_acc_rbfd = accuracy_score(train_label, svcrbfdef.predict(train_data))
-val_acc_rbfd = accuracy_score(validation_label, svcrbfdef.predict(validation_data))
-test_acc_rbfd = accuracy_score(test_label, svcrbfdef.predict(test_data))
+# train_label = train_label.ravel()
+# validation_label = validation_label.ravel()
+# test_label = test_label.ravel()
 
 
-print("RBF default gamma Accuracies:")
-print("Train:", train_acc_rbfd, "Val:", val_acc_rbfd, "Test:", test_acc_rbfd)
+# svclin = SVC(kernel='linear') 
+# svclin.fit(train_data, train_label)
 
-# Radial basis function with value of gamma setting to 1
-train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
+# train_acc_lin = accuracy_score(train_label, svclin.predict(train_data))
+# vacc_lin = accuracy_score(validation_label, svclin.predict(validation_data))
+# test_acc_lin = accuracy_score(test_label, svclin.predict(test_data))
 
-train_label = train_label.ravel()
-validation_label = validation_label.ravel()
-test_label = test_label.ravel()
+# print("Linear Kernel Accuracies:")
+# print("Train:", train_acc_lin, "Val:", vacc_lin, "Test:", test_acc_lin)
 
-svcrbfg1 = SVC(kernel='rbf', gamma=1)
-svcrbfg1.fit(train_data, train_label)
+# train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
 
-train_acc_rbfg1 = accuracy_score(train_label, svcrbfg1.predict(train_data))
-vacc_rbfg1 = accuracy_score(validation_label, svcrbfg1.predict(validation_data))
-test_acc_rbfg1 = accuracy_score(test_label, svcrbfg1.predict(test_data))
+# train_label = train_label.ravel()
+# validation_label = validation_label.ravel()
+# test_label = test_label.ravel()
 
-print("RBF gamma=1 Accuracies:")
-print("Train:", train_acc_rbfg1, "Val:", vacc_rbfg1, "Test:", test_acc_rbfg1)
+# svcrbfdef = SVC(kernel='rbf')  
+# svcrbfdef.fit(train_data, train_label)
 
-
-# Radial basis function with value of gamma setting to default
-train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
-
-train_label = train_label.ravel()
-validation_label = validation_label.ravel()
-test_label = test_label.ravel()
-
-svcrbfdef = SVC(kernel='rbf')  
-svcrbfdef.fit(train_data, train_label)
-
-train_acc_rbfd = accuracy_score(train_label, svcrbfdef.predict(train_data))
-val_acc_rbfd = accuracy_score(validation_label, svcrbfdef.predict(validation_data))
-test_acc_rbfd = accuracy_score(test_label, svcrbfdef.predict(test_data))
+# train_acc_rbfd = accuracy_score(train_label, svcrbfdef.predict(train_data))
+# val_acc_rbfd = accuracy_score(validation_label, svcrbfdef.predict(validation_data))
+# test_acc_rbfd = accuracy_score(test_label, svcrbfdef.predict(test_data))
 
 
-print("RBF default gamma Accuracies:")
-print("Train:", train_acc_rbfd, "Val:", val_acc_rbfd, "Test:", test_acc_rbfd)
+# print("RBF default gamma Accuracies:")
+# print("Train:", train_acc_rbfd, "Val:", val_acc_rbfd, "Test:", test_acc_rbfd)
+
+# # Radial basis function with value of gamma setting to 1
+# train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
+
+# train_label = train_label.ravel()
+# validation_label = validation_label.ravel()
+# test_label = test_label.ravel()
+
+# svcrbfg1 = SVC(kernel='rbf', gamma=1)
+# svcrbfg1.fit(train_data, train_label)
+
+# train_acc_rbfg1 = accuracy_score(train_label, svcrbfg1.predict(train_data))
+# vacc_rbfg1 = accuracy_score(validation_label, svcrbfg1.predict(validation_data))
+# test_acc_rbfg1 = accuracy_score(test_label, svcrbfg1.predict(test_data))
+
+# print("RBF gamma=1 Accuracies:")
+# print("Train:", train_acc_rbfg1, "Val:", vacc_rbfg1, "Test:", test_acc_rbfg1)
 
 
-# Radial basis function with value of gamma setting to default and varying value of C (1, 10, 20, 30,..., 100)
-train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
+# # Radial basis function with value of gamma setting to default
+# train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
 
-train_label = train_label.ravel()
-validation_label = validation_label.ravel()
-test_label = test_label.ravel()
+# train_label = train_label.ravel()
+# validation_label = validation_label.ravel()
+# test_label = test_label.ravel()
 
-Cval = list(range(1, 101, 10))  
+# svcrbfdef = SVC(kernel='rbf')  
+# svcrbfdef.fit(train_data, train_label)
 
-trainacc = []
-valacc = []
-testacc = []
+# train_acc_rbfd = accuracy_score(train_label, svcrbfdef.predict(train_data))
+# val_acc_rbfd = accuracy_score(validation_label, svcrbfdef.predict(validation_data))
+# test_acc_rbfd = accuracy_score(test_label, svcrbfdef.predict(test_data))
 
-for i in Cval:
-    svc_rbfc = SVC(kernel='rbf', C=i) 
-    svc_rbfc.fit(train_data, train_label)
+
+# print("RBF default gamma Accuracies:")
+# print("Train:", train_acc_rbfd, "Val:", val_acc_rbfd, "Test:", test_acc_rbfd)
+
+
+# # Radial basis function with value of gamma setting to default and varying value of C (1, 10, 20, 30,..., 100)
+# train_data, train_label, validation_data, validation_label, test_data, test_label = preprocess()
+
+# train_label = train_label.ravel()
+# validation_label = validation_label.ravel()
+# test_label = test_label.ravel()
+
+# Cval = list(range(1, 101, 10))  
+
+# trainacc = []
+# valacc = []
+# testacc = []
+
+# for i in Cval:
+#     svc_rbfc = SVC(kernel='rbf', C=i) 
+#     svc_rbfc.fit(train_data, train_label)
     
-    train_acc = accuracy_score(train_label, svc_rbfc.predict(train_data))
-    val_acc = accuracy_score(validation_label, svc_rbfc.predict(validation_data))
-    test_acc = accuracy_score(test_label, svc_rbfc.predict(test_data))
+#     train_acc = accuracy_score(train_label, svc_rbfc.predict(train_data))
+#     val_acc = accuracy_score(validation_label, svc_rbfc.predict(validation_data))
+#     test_acc = accuracy_score(test_label, svc_rbfc.predict(test_data))
     
-    trainacc.append(train_acc)
-    valacc.append(val_acc)
-    testacc.append(test_acc)
+#     trainacc.append(train_acc)
+#     valacc.append(val_acc)
+#     testacc.append(test_acc)
 
-best_c_index = np.argmax(valacc)
-best_c = Cval[best_c_index]
-best_val_acc = valacc[best_c_index]
-best_train_acc = trainacc[best_c_index]
-best_test_acc = testacc[best_c_index]
+# best_c_index = np.argmax(valacc)
+# best_c = Cval[best_c_index]
+# best_val_acc = valacc[best_c_index]
+# best_train_acc = trainacc[best_c_index]
+# best_test_acc = testacc[best_c_index]
 
-print(f"\nBest C based on Validation Accuracy: C = {best_c}")
-print(f"Train Accuracy: {best_train_acc:.4f}, Validation Accuracy: {best_val_acc:.4f}, Test Accuracy: {best_test_acc:.4f}")
+# print(f"\nBest C based on Validation Accuracy: C = {best_c}")
+# print(f"Train Accuracy: {best_train_acc:.4f}, Validation Accuracy: {best_val_acc:.4f}, Test Accuracy: {best_test_acc:.4f}")
 
 
-plt.figure(figsize=(8, 5))
-plt.plot(Cval, trainacc, label='Train Accuracy', marker='o')
-plt.plot(Cval, valacc, label='Validation Accuracy', marker='x')
-plt.plot(Cval, testacc, label='Test Accuracy', marker='s', linestyle='--')
+# plt.figure(figsize=(8, 5))
+# plt.plot(Cval, trainacc, label='Train Accuracy', marker='o')
+# plt.plot(Cval, valacc, label='Validation Accuracy', marker='x')
+# plt.plot(Cval, testacc, label='Test Accuracy', marker='s', linestyle='--')
 
-plt.axvline(x=best_c, color='red', linestyle=':', label=f'Best C = {best_c}')
-plt.xlabel('C Value')
-plt.ylabel('Accuracy')
-plt.title('SVM Accuracy with varying C (RBF Kernel)')
+# plt.axvline(x=best_c, color='red', linestyle=':', label=f'Best C = {best_c}')
+# plt.xlabel('C Value')
+# plt.ylabel('Accuracy')
+# plt.title('SVM Accuracy with varying C (RBF Kernel)')
 
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
-plt.savefig("svmacc_varyingC.png") 
-plt.show()
+# plt.legend()
+# plt.grid(True)
+# plt.tight_layout()
+# plt.savefig("svmacc_varyingC.png") 
+# plt.show()
 
 
 """
